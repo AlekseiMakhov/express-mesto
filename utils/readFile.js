@@ -7,7 +7,7 @@ const readFile = (path, encoding) => new Promise((resolve, reject) => {
       reject({ message: 'Ошибка чтения файла' });
       return;
     }
-    resolve(data);
+    resolve(JSON.parse(data));
   });
 });
 

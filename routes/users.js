@@ -5,7 +5,7 @@ const readFile = require('../utils/readFile');
 // Обработка запроса массива пользователей
 router.get('/users', (req, res) => {
   readFile(path.join(__dirname, '..', 'data', 'users.json'), 'utf8')
-    .then((data) => res.send(JSON.parse(data)))
+    .then((data) => res.send(data))
     .catch((err) => res.status(500).send(err));
 });
 
@@ -13,12 +13,12 @@ router.get('/users', (req, res) => {
 router.get('/users/:id', (req, res) => {
   readFile(path.join(__dirname, '..', 'data', 'users.json'), 'utf8')
     .then((data) => {
-      const users = JSON.parse(data);
+      const users = data;
 
       let foundUser = { status: 404, data: { message: 'Нет пользователя с таким id' } };
 
       // eslint-disable-next-line array-callback-return
-      users.some((user) => {
+      users.find((user) => {
         // eslint-disable-next-line no-unused-expressions
         user._id === req.params.id
           ? foundUser = { status: 200, data: user }
