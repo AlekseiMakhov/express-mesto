@@ -15,7 +15,7 @@
 
 * Запрос массива карточек из файла cards.json по адресу _http://localhost:3000/cards_
 * Запрос массива пользователей из файла users.json по адресу _http://localhost:3000/users_
-* Запрос пользователя по idпо адресу _http://localhost:3000/users/{id}_
+* Запрос пользователя по id по адресу _http://localhost:3000/users/{id}_
 
 ### Технологии:
 

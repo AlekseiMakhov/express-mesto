@@ -1,12 +1,12 @@
 const router = require('express').Router();
-const path = require('path');
-const readFile = require('../utils/readFile');
+const {
+  createCard, deleteCard, getCards, likeCard, dislikeCard,
+} = require('../controllers/cards');
 
-// Обработка запроса массива карточек
-router.get('/cards', (req, res) => {
-  readFile(path.join(__dirname, '..', 'data', 'cards.json'), 'utf8')
-    .then((data) => res.send(data))
-    .catch((err) => res.status(500).send(err));
-});
+router.post('/cards', createCard);
+router.get('/cards', getCards);
+router.delete('/cards/:cardId', deleteCard);
+router.put('/cards/:cardId/likes', likeCard);
+router.delete('/cards/:cardId/likes', dislikeCard);
 
 module.exports = router;

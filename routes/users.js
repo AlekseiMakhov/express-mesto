@@ -1,32 +1,12 @@
 const router = require('express').Router();
-const path = require('path');
-const readFile = require('../utils/readFile');
+const {
+  createUser, getUsers, getUser, updateUser, updateAvatar,
+} = require('../controllers/users');
 
-// Обработка запроса массива пользователей
-router.get('/users', (req, res) => {
-  readFile(path.join(__dirname, '..', 'data', 'users.json'), 'utf8')
-    .then((data) => res.send(data))
-    .catch((err) => res.status(500).send(err));
-});
-
-// Обработка запроса пользователя по id
-router.get('/users/:id', (req, res) => {
-  readFile(path.join(__dirname, '..', 'data', 'users.json'), 'utf8')
-    .then((data) => {
-      const users = data;
-
-      let foundUser = { status: 404, data: { message: 'Нет пользователя с таким id' } };
-
-      // eslint-disable-next-line array-callback-return
-      users.find((user) => {
-        // eslint-disable-next-line no-unused-expressions
-        user._id === req.params.id
-          ? foundUser = { status: 200, data: user }
-          : null;
-      });
-      res.status(foundUser.status).send(foundUser.data);
-    })
-    .catch((err) => res.status(500).send(err));
-});
+router.post('/users', createUser);
+router.get('/users', getUsers);
+router.get('/users/:userId', getUser);
+router.patch('/users/me', updateUser);
+router.patch('/users/me/avatar', updateAvatar);
 
 module.exports = router;
