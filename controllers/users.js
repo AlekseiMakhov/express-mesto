@@ -7,7 +7,7 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ошибка добавления пользователя' });
+        res.status(400).send({ message: 'Переданы некорректные данные' });
       }
     });
 };
@@ -26,10 +26,14 @@ module.exports.getUser = (req, res) => User.findById(req.params.userId)
   .orFail(new Error('MyError'))
   .then((user) => res.send({ data: user }))
   .catch((err) => {
+    if (err.name === 'CastError') {
+      res.status(400).send({ message: 'Переданы некорректные данные' });
+      return;
+    }
     if (err.message === 'MyError') {
       res.status(404).send({ message: 'Такого пользователя не существует' });
     } else {
-      res.status(500).send({ message: 'Что-то пошло не так' });
+      res.status(500).send({ message: 'Ошибка сервера' });
     }
   });
 
@@ -45,7 +49,7 @@ module.exports.updateUser = (req, res) => {
         return;
       }
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ошибка обновления данных пользователя' });
+        res.status(400).send({ message: 'Переданы некорректные данные' });
       }
     });
 };
@@ -62,7 +66,7 @@ module.exports.updateAvatar = (req, res) => {
         return;
       }
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ошибка обновления аватара' });
+        res.status(400).send({ message: 'Переданы некорректные данные' });
       }
     });
 };
