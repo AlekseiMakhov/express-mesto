@@ -1,4 +1,4 @@
-const Card = require('../models/card');
+const Card = require('../models/Card');
 
 // создание карточки
 module.exports.createCard = (req, res) => {
