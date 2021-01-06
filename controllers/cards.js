@@ -18,14 +18,19 @@ module.exports.getCards = (req, res) => Card.find({})
   .then((card) => res.send({ data: card }))
   .catch((err) => {
     if (err.name === 'CastError') {
-      res.status(500).send({ message: 'Ошибка запроса карточек' });
+      res.status(400).send({ message: 'Ошибка запроса карточек' });
     }
   });
 
 // удаление карточки
 module.exports.deleteCard = (req, res) => Card.findByIdAndRemove(req.params.cardId)
+  .orFail(new Error('MyError'))
   .then(() => res.send({ message: 'Карточка удалена' }))
-  .catch(() => res.status(500).send({ message: 'Такая удаления карточки' }));
+  .catch((err) => {
+    if (err.message === 'MyError') {
+      res.status(404).send({ message: 'Такой карточки нет в базе' });
+    } else { res.status(400).send({ message: 'Невалидный ID карточки' }); }
+  });
 
 // лайк
 module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
@@ -33,11 +38,16 @@ module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
   { $addToSet: { likes: req.user._id } },
   { new: true },
 )
+  .orFail(new Error('MyError'))
   .populate(['owner', 'likes'])
   .then((card) => res.send({ data: card }))
   .catch((err) => {
+    if (err.message === 'MyError') {
+      res.status(404).send({ message: 'Такой карточки нет в базе' });
+      return;
+    }
     if (err.name === 'CastError') {
-      res.status(500).send({ message: 'Что-то пошло не так' });
+      res.status(400).send({ message: 'Невалидный ID карточки' });
     }
   });
 
@@ -47,10 +57,15 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   { $pull: { likes: req.user._id } },
   { new: true },
 )
+  .orFail(new Error('MyError'))
   .populate(['owner', 'likes'])
   .then((card) => res.send({ data: card }))
   .catch((err) => {
+    if (err.message === 'MyError') {
+      res.status(404).send({ message: 'Такой карточки нет в базе' });
+      return;
+    }
     if (err.name === 'CastError') {
-      res.status(500).send({ message: 'Что-то пошло не так' });
+      res.status(400).send({ message: 'Невалидный ID карточки' });
     }
   });
